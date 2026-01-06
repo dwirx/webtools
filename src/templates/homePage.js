@@ -6,66 +6,82 @@ const { ITEMS_PER_PAGE_OPTIONS } = require("../config");
 const { darkThemeStyles, enhancedStyles } = require("./styles");
 
 const FILTER_OPTIONS = [
-  { value: "all", label: "Semua" },
-  { value: "games", label: "Games" },
-  { value: "tools", label: "Tools" },
-  { value: "mind", label: "Mind" },
-  { value: "random", label: "Random" },
+    { value: "all", label: "Semua" },
+    { value: "games", label: "Games" },
+    { value: "tools", label: "Tools" },
+    { value: "mind", label: "Mind" },
+    { value: "random", label: "Random" },
 ];
 
 const SORT_OPTIONS = [
-  { value: "asc", label: "A → Z" },
-  { value: "desc", label: "Z → A" },
+    { value: "asc", label: "A → Z" },
+    { value: "desc", label: "Z → A" },
 ];
 
 function buildOption({ value, label }, selectedValue) {
-  const selected = value === selectedValue ? "selected" : "";
-  return `<option value="${value}" ${selected}>${escapeHtml(label)}</option>`;
+    const selected = value === selectedValue ? "selected" : "";
+    return `<option value="${value}" ${selected}>${escapeHtml(label)}</option>`;
 }
 
 function renderItemsPerPageSelect(selectedValue) {
-  const options = ITEMS_PER_PAGE_OPTIONS.map((value) =>
-    buildOption({ value: String(value), label: `${value} item` }, String(selectedValue)),
-  );
-  return options.join("");
+    const options = ITEMS_PER_PAGE_OPTIONS.map((value) =>
+        buildOption(
+            { value: String(value), label: `${value} item` },
+            String(selectedValue),
+        ),
+    );
+    return options.join("");
 }
 
 function renderFilterSelect(selectedValue) {
-  return FILTER_OPTIONS.map((option) => buildOption(option, selectedValue)).join("");
+    return FILTER_OPTIONS.map((option) =>
+        buildOption(option, selectedValue),
+    ).join("");
 }
 
 function renderSortSelect(selectedValue) {
-  return SORT_OPTIONS.map((option) => buildOption(option, selectedValue)).join("");
+    return SORT_OPTIONS.map((option) =>
+        buildOption(option, selectedValue),
+    ).join("");
 }
 
-function renderPagination(totalPages, currentPage, itemsPerPage, filter, sortOrder, searchTerm) {
-  if (!totalPages || totalPages <= 1) {
-    return "";
-  }
-
-  const links = Array.from({ length: totalPages }, (_, index) => {
-    const page = index + 1;
-    const isActive = page === currentPage;
-    const classes = isActive ? "bg-blue-500 text-white" : "bg-white text-blue-500";
-    const params = new URLSearchParams({
-      items: String(itemsPerPage),
-      page: String(page),
-      filter,
-      sort: sortOrder,
-    });
-
-    if (searchTerm) {
-      params.set("search", searchTerm);
+function renderPagination(
+    totalPages,
+    currentPage,
+    itemsPerPage,
+    filter,
+    sortOrder,
+    searchTerm,
+) {
+    if (!totalPages || totalPages <= 1) {
+        return "";
     }
 
-    return `
+    const links = Array.from({ length: totalPages }, (_, index) => {
+        const page = index + 1;
+        const isActive = page === currentPage;
+        const classes = isActive
+            ? "bg-blue-500 text-white"
+            : "bg-white text-blue-500";
+        const params = new URLSearchParams({
+            items: String(itemsPerPage),
+            page: String(page),
+            filter,
+            sort: sortOrder,
+        });
+
+        if (searchTerm) {
+            params.set("search", searchTerm);
+        }
+
+        return `
       <a href="/?${params.toString()}" class="px-3 py-2 m-1 ${classes} rounded-md">
         ${page}
       </a>
     `;
-  });
+    });
 
-  return `
+    return `
     <div id="pagination" class="mt-8 flex justify-center flex-wrap">
       ${links.join("")}
     </div>
@@ -73,12 +89,12 @@ function renderPagination(totalPages, currentPage, itemsPerPage, filter, sortOrd
 }
 
 function formatNumber(value) {
-  const safeValue = Number.isFinite(value) ? value : 0;
-  return safeValue.toLocaleString("id-ID");
+    const safeValue = Number.isFinite(value) ? value : 0;
+    return safeValue.toLocaleString("id-ID");
 }
 
 function renderMetricChip({ label, value, caption }) {
-  return `
+    return `
     <div class="metric-chip">
       <span class="metric-chip__value">${value}</span>
       <div class="metric-chip__meta">
@@ -90,11 +106,11 @@ function renderMetricChip({ label, value, caption }) {
 }
 
 function renderMetricsRow(stats) {
-  if (!stats.length) {
-    return "";
-  }
+    if (!stats.length) {
+        return "";
+    }
 
-  return `
+    return `
     <div class="hero__metrics-grid">
       ${stats.map(renderMetricChip).join("")}
     </div>
@@ -102,24 +118,26 @@ function renderMetricsRow(stats) {
 }
 
 function renderQuickFilters(selectedFilter) {
-  return FILTER_OPTIONS.map((option) => {
-    const label = escapeHtml(option.label);
-    const value = escapeHtml(option.value);
-    const isActive = option.value === selectedFilter;
-    const classes = isActive ? "quick-chip quick-chip--active" : "quick-chip";
-    return `
+    return FILTER_OPTIONS.map((option) => {
+        const label = escapeHtml(option.label);
+        const value = escapeHtml(option.value);
+        const isActive = option.value === selectedFilter;
+        const classes = isActive
+            ? "quick-chip quick-chip--active"
+            : "quick-chip";
+        return `
       <button type="button" class="${classes}" data-filter="${value}" onclick="setFilter('${value}')">
         ${label}
       </button>
     `;
-  }).join("");
+    }).join("");
 }
 
 function renderCategorySection({ title, id, entries, folderKey, actionLabel }) {
-  const safeTitle = escapeHtml(title);
-  const emptyMessage = `Belum ada ${title} yang cocok dengan filter ini.`;
+    const safeTitle = escapeHtml(title);
+    const emptyMessage = `Belum ada ${title} yang cocok dengan filter ini.`;
 
-  return `
+    return `
     <section class="catalog-section" id="section-${escapeHtml(id)}">
       <div class="flex items-center justify-between mb-4">
         <h2>${safeTitle}</h2>
@@ -133,65 +151,66 @@ function renderCategorySection({ title, id, entries, folderKey, actionLabel }) {
 }
 
 function renderHomePage({
-  itemsPerPage,
-  currentPage,
-  filter,
-  sortOrder,
-  games,
-  tools,
-  mind,
-  random,
-  totalPages,
-  searchTerm = "",
+    itemsPerPage,
+    currentPage,
+    filter,
+    sortOrder,
+    games,
+    tools,
+    mind,
+    random,
+    totalPages,
+    searchTerm = "",
 }) {
-  const searchValue = escapeHtml(searchTerm);
-  const selectedFilter = filter || "all";
-  const selectedSort = sortOrder || "asc";
+    const searchValue = escapeHtml(searchTerm);
+    const selectedFilter = filter || "all";
+    const selectedSort = sortOrder || "asc";
 
-  const gamesEntries = games?.entries ?? [];
-  const toolsEntries = tools?.entries ?? [];
-  const mindEntries = mind?.entries ?? [];
-  const randomEntries = random?.entries ?? [];
+    const gamesEntries = games?.entries ?? [];
+    const toolsEntries = tools?.entries ?? [];
+    const mindEntries = mind?.entries ?? [];
+    const randomEntries = random?.entries ?? [];
 
-  const gamesTotal = games?.totalItems ?? 0;
-  const toolsTotal = tools?.totalItems ?? 0;
-  const mindTotal = mind?.totalItems ?? 0;
-  const randomTotal = random?.totalItems ?? 0;
-  const totalItems = gamesTotal + toolsTotal + mindTotal + randomTotal;
+    const gamesTotal = games?.totalItems ?? 0;
+    const toolsTotal = tools?.totalItems ?? 0;
+    const mindTotal = mind?.totalItems ?? 0;
+    const randomTotal = random?.totalItems ?? 0;
+    const totalItems = gamesTotal + toolsTotal + mindTotal + randomTotal;
 
-  const statsData = [
-    {
-      label: "Total Koleksi",
-      value: formatNumber(totalItems),
-      caption: "Seluruh game, tools & eksperimen",
-    },
-    {
-      label: "Games",
-      value: formatNumber(gamesTotal),
-      caption: "Siap dimainkan langsung",
-    },
-    {
-      label: "Tools",
-      value: formatNumber(toolsTotal),
-      caption: "Utility harian & AI tools",
-    },
-    {
-      label: "Mind",
-      value: formatNumber(mindTotal),
-      caption: "Eksperimen ide & produktivitas",
-    },
-    {
-      label: "Random",
-      value: formatNumber(randomTotal),
-      caption: "Proyek unik & hiburan",
-    },
-  ];
+    const statsData = [
+        {
+            label: "Total Koleksi",
+            value: formatNumber(totalItems),
+            caption: "Seluruh game, tools & eksperimen",
+        },
+        {
+            label: "Games",
+            value: formatNumber(gamesTotal),
+            caption: "Siap dimainkan langsung",
+        },
+        {
+            label: "Tools",
+            value: formatNumber(toolsTotal),
+            caption: "Utility harian & AI tools",
+        },
+        {
+            label: "Mind",
+            value: formatNumber(mindTotal),
+            caption: "Eksperimen ide & produktivitas",
+        },
+        {
+            label: "Random",
+            value: formatNumber(randomTotal),
+            caption: "Proyek unik & hiburan",
+        },
+    ];
 
-  const heroSection = `
+    const heroSection = `
     <section class="hero">
       <div class="hero__content">
-        <span class="hero__tag">GameListAI · Kurasi Web Tools & Games</span>
+        <span class="hero__tag">Kurasi Game & Web Tools · Bebas Tak Usah Install</span>
         <h1 class="hero__title">Temukan koleksi favoritmu dalam sekali klik</h1>
+        <p class="hero__subtitle">Semua dikemas ringan, tinggal klik untuk main atau pakai.</p>
         <p class="hero__description">
           Lebih dari ${formatNumber(totalItems)} game & tools siap pakai dengan akses kilat. Gunakan pencarian instan, simpan favorit, dan lanjutkan aktivitas terakhir tanpa harus mencari ulang.
         </p>
@@ -210,7 +229,7 @@ function renderHomePage({
     </section>
   `;
 
-  const controlPanel = `
+    const controlPanel = `
     <section class="control-panel">
       <div class="control-panel__row">
         <div class="selector-group">
@@ -234,9 +253,11 @@ function renderHomePage({
             spellcheck="false"
           />
           <button type="submit" class="entry-button entry-button--primary">Cari</button>
-          ${searchTerm
-            ? '<button type="button" class="entry-button entry-button--ghost" onclick="clearSearch()">Bersihkan</button>'
-            : ""}
+          ${
+              searchTerm
+                  ? '<button type="button" class="entry-button entry-button--ghost" onclick="clearSearch()">Bersihkan</button>'
+                  : ""
+          }
         </form>
       </div>
       <div class="control-panel__row control-panel__row--meta">
@@ -256,7 +277,7 @@ function renderHomePage({
     </section>
   `;
 
-  const quickAccess = `
+    const quickAccess = `
     <section class="quick-access" aria-label="Akses cepat">
       <div class="quick-panel" id="favorites-section">
         <div class="quick-panel__header">
@@ -277,57 +298,87 @@ function renderHomePage({
     </section>
   `;
 
-  const showGames = selectedFilter === "all" || selectedFilter === "games";
-  const showTools = selectedFilter === "all" || selectedFilter === "tools";
-  const showMind = selectedFilter === "all" || selectedFilter === "mind";
-  const showRandom = selectedFilter === "all" || selectedFilter === "random";
+    const showGames = selectedFilter === "all" || selectedFilter === "games";
+    const showTools = selectedFilter === "all" || selectedFilter === "tools";
+    const showMind = selectedFilter === "all" || selectedFilter === "mind";
+    const showRandom = selectedFilter === "all" || selectedFilter === "random";
 
-  const sections = [
-    showGames
-      ? renderCategorySection({
-          title: "Games",
-          id: "games",
-          entries: gamesEntries,
-          folderKey: "game",
-          actionLabel: "Mainkan",
-        })
-      : "",
-    showTools
-      ? renderCategorySection({
-          title: "Tools",
-          id: "tools",
-          entries: toolsEntries,
-          folderKey: "tools",
-          actionLabel: "Gunakan",
-        })
-      : "",
-    showMind
-      ? renderCategorySection({
-          title: "Mind",
-          id: "mind",
-          entries: mindEntries,
-          folderKey: "mind",
-          actionLabel: "Buka",
-        })
-      : "",
-    showRandom
-      ? renderCategorySection({
-          title: "Random",
-          id: "random",
-          entries: randomEntries,
-          folderKey: "random",
-          actionLabel: "Telusuri",
-        })
-      : "",
-  ].join("");
+    const categoryNavItems = [
+        { id: "games", label: "Games", total: gamesTotal, enabled: showGames },
+        { id: "tools", label: "Tools", total: toolsTotal, enabled: showTools },
+        { id: "mind", label: "Mind", total: mindTotal, enabled: showMind },
+        {
+            id: "random",
+            label: "Random",
+            total: randomTotal,
+            enabled: showRandom,
+        },
+    ].filter(({ enabled }) => enabled);
 
-  const content = `
+    const sectionNav = categoryNavItems.length
+        ? `
+      <nav class="section-nav" aria-label="Navigasi kategori">
+        ${categoryNavItems
+            .map(
+                (item) => `
+              <a class="section-nav__item" href="#section-${escapeHtml(item.id)}">
+                <span>${escapeHtml(item.label)}</span>
+                <span class="section-nav__count">${formatNumber(item.total)}</span>
+              </a>
+            `,
+            )
+            .join("")}
+      </nav>
+    `
+        : "";
+
+    const sections = [
+        showGames
+            ? renderCategorySection({
+                  title: "Games",
+                  id: "games",
+                  entries: gamesEntries,
+                  folderKey: "game",
+                  actionLabel: "Mainkan",
+              })
+            : "",
+        showTools
+            ? renderCategorySection({
+                  title: "Tools",
+                  id: "tools",
+                  entries: toolsEntries,
+                  folderKey: "tools",
+                  actionLabel: "Gunakan",
+              })
+            : "",
+        showMind
+            ? renderCategorySection({
+                  title: "Mind",
+                  id: "mind",
+                  entries: mindEntries,
+                  folderKey: "mind",
+                  actionLabel: "Buka",
+              })
+            : "",
+        showRandom
+            ? renderCategorySection({
+                  title: "Random",
+                  id: "random",
+                  entries: randomEntries,
+                  folderKey: "random",
+                  actionLabel: "Telusuri",
+              })
+            : "",
+    ].join("");
+
+    const content = `
     <div id="main-container" class="mx-auto px-4 py-12 space-y-12">
       ${heroSection}
       <div class="control-stack">
         ${controlPanel}
         ${quickAccess}
       </div>
+      ${sectionNav}
       <div id="folders-container">
         ${sections}
       </div>
@@ -346,14 +397,14 @@ function renderHomePage({
     </div>
   `;
 
-  return layout({
-    title: "GameListAI",
-    bodyClass: "min-h-screen",
-    bodyId: "body",
-    styles: `${darkThemeStyles}\n${enhancedStyles}`,
-    content,
-    scripts: '<script src="/scripts/app.js"></script>',
-  });
+    return layout({
+        title: "GameListAI",
+        bodyClass: "min-h-screen",
+        bodyId: "body",
+        styles: `${darkThemeStyles}\n${enhancedStyles}`,
+        content,
+        scripts: '<script src="/scripts/app.js"></script>',
+    });
 }
 
 module.exports = renderHomePage;

@@ -60,16 +60,16 @@ const defaultStyles = `
 `;
 
 function layout({
-  title,
-  bodyClass = "",
-  bodyId = "",
-  headContent = "",
-  styles = "",
-  content = "",
-  scripts = "",
+    title,
+    bodyClass = "",
+    bodyId = "",
+    headContent = "",
+    styles = "",
+    content = "",
+    scripts = "",
 }) {
-  const idAttribute = bodyId ? ` id="${bodyId}"` : "";
-  return `
+    const idAttribute = bodyId ? ` id="${bodyId}"` : "";
+    return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -77,6 +77,9 @@ function layout({
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>${title}</title>
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
       ${headContent}
       <style>
         ${defaultStyles}
